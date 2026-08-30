@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro — Focus Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>pomodoro</h1>
+      </div>
+      <nav class="view-switch">
+        <button id="viewTimer" class="view-btn active">Timer</button>
+        <button id="viewHistory" class="view-btn">History</button>
+      </nav>
+    </header>
+
+    <!-- TIMER VIEW -->
+    <main id="timerView" class="view">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="pomodoro">Pomodoro</button>
+        <button class="mode-tab" data-mode="short">Short break</button>
+        <button class="mode-tab" data-mode="long">Long break</button>
+      </div>
+
+      <div class="task-input">
+        <input type="text" id="taskInput" placeholder="What are you focusing on?" maxlength="80">
+      </div>
+
+      <div class="timer-wrap">
+        <svg class="ring" viewBox="0 0 340 340">
+          <circle class="ring-bg" cx="170" cy="170" r="150"></circle>
+          <circle class="ring-fg" cx="170" cy="170" r="150"></circle>
+        </svg>
+        <div class="timer-center">
+          <div id="timeDisplay" class="time">25:00</div>
+          <div id="sessionLabel" class="session-label">Ready</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" class="btn btn-primary">Start</button>
+        <button id="resetBtn" class="btn btn-ghost">Reset</button>
+        <button id="skipBtn" class="btn btn-ghost">Skip</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value" id="cycleCount">0</span>
+          <span class="stat-label">of 4 pomodoros</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="todayHours">0h 0m</span>
+          <span class="stat-label">today</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="totalHours">0h 0m</span>
+          <span class="stat-label">total</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="streakCount">0</span>
+          <span class="stat-label">day streak</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- HISTORY VIEW -->
+    <main id="historyView" class="view hidden">
+      <section class="summary">
+        <div class="summary-card">
+          <span class="summary-label">Total focus</span>
+          <span class="summary-value" id="sumTotal">0h 0m</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Today</span>
+          <span class="summary-value" id="sumToday">0h 0m</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">This week</span>
+          <span class="summary-value" id="sumWeek">0h 0m</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Sessions</span>
+          <span class="summary-value" id="sumCount">0</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Current streak</span>
+          <span class="summary-value" id="sumStreak">0 🔥</span>
+        </div>
+      </section>
+
+      <section class="chart-section">
+        <div class="section-head">
+          <h2>Last 7 days</h2>
+        </div>
+        <div id="chart" class="chart"></div>
+      </section>
+
+      <section class="list-section">
+        <div class="section-head">
+          <h2>Session log</h2>
+          <div class="list-actions">
+            <button id="exportCsv" class="btn btn-ghost btn-sm">CSV</button>
+            <button id="exportJson" class="btn btn-ghost btn-sm">JSON</button>
+            <button id="clearAll" class="btn btn-danger btn-sm">Clear</button>
+          </div>
+        </div>
+        <div id="sessionList" class="session-list"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Space = start/pause · R = reset</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
