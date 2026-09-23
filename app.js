@@ -20,6 +20,7 @@ let remainingSeconds = totalSeconds;
 let cycleCount = 0; // completed pomodoros in current cycle
 let timerId = null;
 let deadline = 0;
+let audioContext = null;
 
 // ---- DOM refs ----
 const $ = (id) => document.getElementById(id);
@@ -153,6 +154,7 @@ function tick() {
 
 function startTimer() {
   if (running) return;
+  unlockAudio();
   running = true;
   paused = false;
   if (remainingSeconds <= 0) {
@@ -281,9 +283,34 @@ function notify(title, body) {
   }
 }
 
+function getAudioContext() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return null;
+  if (!audioContext || audioContext.state === "closed") {
+    try {
+      audioContext = new AudioContextClass();
+    } catch (error) {
+      console.warn("Timer audio is unavailable.", error);
+      return null;
+    }
+  }
+  return audioContext;
+}
+
+function unlockAudio() {
+  const ctx = getAudioContext();
+  if (ctx && ctx.state === "suspended") {
+    ctx.resume().catch((error) => {
+      console.warn("Unable to unlock timer audio.", error);
+    });
+  }
+}
+
 function playChime() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const scheduleChime = () => {
     [0, 0.25, 0.5].forEach((t) => {
       const o = ctx.createOscillator();
       const g = ctx.createGain();
@@ -297,9 +324,16 @@ function playChime() {
       o.start(ctx.currentTime + t);
       o.stop(ctx.currentTime + t + 0.5);
     });
-  } catch (e) {
-    /* audio unavailable */
+  };
+
+  if (ctx.state === "suspended") {
+    ctx.resume().then(scheduleChime).catch((error) => {
+      console.warn("Unable to play timer audio.", error);
+    });
+    return;
   }
+
+  scheduleChime();
 }
 
 // ---- Stats on timer view ----
