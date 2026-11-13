@@ -3,22 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pomodoro — Focus Timer</title>
+  <title>Pomodoro — Learning Planner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app">
+  <div class="app" id="appShell">
     <header class="topbar">
       <div class="brand">
         <span class="brand-dot"></span>
         <h1>pomodoro</h1>
       </div>
-      <nav class="view-switch">
-        <button id="viewTimer" class="view-btn active">Timer</button>
-        <button id="viewHistory" class="view-btn">History</button>
+      <nav class="view-switch" id="mainNav" aria-label="Main views">
+        <button id="viewTimer" class="view-btn active" data-view="timer">Timer</button>
+        <button id="viewDashboard" class="view-btn" data-view="dashboard">Dashboard</button>
+        <button id="viewCalendar" class="view-btn" data-view="calendar">Calendar</button>
+        <button id="viewLibrary" class="view-btn" data-view="library">Library</button>
+        <button id="viewHistory" class="view-btn" data-view="history">History</button>
+        <button id="viewAnalytics" class="view-btn" data-view="analytics">Analytics</button>
       </nav>
     </header>
 
@@ -33,6 +37,15 @@
       <div class="task-input">
         <input type="text" id="taskInput" placeholder="What are you focusing on?" maxlength="80">
       </div>
+
+      <div class="focus-link-row">
+        <label class="focus-link-label" for="focusLink">Link to</label>
+        <select id="focusLink" class="text-input focus-link-select">
+          <option value="">No course, book, or task</option>
+        </select>
+        <button id="clearEventContext" class="btn btn-ghost btn-sm hidden">Clear event</button>
+      </div>
+      <div id="focusContextBadge" class="focus-context hidden"></div>
 
       <div class="timer-wrap">
         <svg class="ring" viewBox="0 0 340 340">
@@ -69,6 +82,54 @@
           <span class="stat-label">day streak</span>
         </div>
       </div>
+    </main>
+
+    <!-- DASHBOARD VIEW -->
+    <main id="dashboardView" class="view hidden">
+      <div class="section-head page-head">
+        <div>
+          <h2>Dashboard</h2>
+          <span id="dashboardDate" class="page-subtitle"></span>
+        </div>
+        <button id="dashboardCalendarBtn" class="btn btn-ghost btn-sm">Open calendar</button>
+      </div>
+      <div id="dashboardContent" class="dashboard-content"></div>
+    </main>
+
+    <!-- CALENDAR VIEW -->
+    <main id="calendarView" class="view hidden">
+      <div class="section-head page-head">
+        <div>
+          <h2>Calendar</h2>
+          <span id="calendarSubtitle" class="page-subtitle"></span>
+        </div>
+        <div class="head-actions">
+          <button id="autoScheduleBtn" class="btn btn-ghost btn-sm">Auto schedule</button>
+          <button id="addEventBtn" class="btn btn-primary btn-sm">+ Session</button>
+        </div>
+      </div>
+      <div id="calendarToolbar" class="calendar-toolbar"></div>
+      <div id="calendarFilters" class="calendar-filters"></div>
+      <div id="calendarBody" class="calendar-body"></div>
+      <section class="unscheduled-section">
+        <div class="section-head">
+          <h2>Unscheduled learning</h2>
+        </div>
+        <div id="unscheduledList" class="unscheduled-list"></div>
+      </section>
+    </main>
+
+    <!-- LIBRARY VIEW -->
+    <main id="libraryView" class="view hidden">
+      <div class="section-head page-head">
+        <div>
+          <h2>Learning library</h2>
+          <span id="librarySubtitle" class="page-subtitle"></span>
+        </div>
+        <button id="addLearningBtn" class="btn btn-primary btn-sm">+ New course</button>
+      </div>
+      <div id="learningTabs"></div>
+      <div id="libraryContent"></div>
     </main>
 
     <!-- HISTORY VIEW -->
@@ -116,11 +177,45 @@
       </section>
     </main>
 
+    <!-- ANALYTICS VIEW -->
+    <main id="analyticsView" class="view hidden">
+      <div class="section-head page-head">
+        <div>
+          <h2>Analytics</h2>
+          <span id="analyticsSubtitle" class="page-subtitle"></span>
+        </div>
+        <div class="range-switch" id="analyticsRange">
+          <button class="range-btn active" data-range="7">7 days</button>
+          <button class="range-btn" data-range="30">30 days</button>
+        </div>
+      </div>
+      <div id="analyticsContent" class="analytics-content"></div>
+    </main>
+
     <footer class="footer">
       <span>Space = start/pause · R = reset</span>
     </footer>
   </div>
 
+  <div id="plannerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="modalTitle"></h2>
+        <button id="modalClose" class="icon-btn" type="button" aria-label="Close">✕</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/scheduler.js"></script>
+  <script src="js/learning.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/analytics.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
